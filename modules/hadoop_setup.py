@@ -48,5 +48,5 @@ class HadoopSetup:
                 elif "</configuration>" in line:
                     core_site.write(line)
                 else:
-                    continue
+                    core_site.write(line)
         print("Edited core-site.xml ...")
