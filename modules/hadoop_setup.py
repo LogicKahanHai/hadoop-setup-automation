@@ -2,7 +2,7 @@ from const.constants import Constants
 from file_handling import FileHandling
 
 
-class HadoopSetup:
+class HadoopEnvSetup:
     def __init__(self, db: FileHandling) -> None:
         self.db = db
         self.hadoop_home = self.db.read_property(Constants.hadoop_home())
@@ -33,21 +33,3 @@ class HadoopSetup:
         )
         yarn_env.close()
         print("Added JAVA_HOME to yarn-env.sh ...")
-
-    def edit_core_site(self, master_dns: str):
-        self.db.write_property(Constants.master_dns(), master_dns)
-        print("Editing core-site.xml...")
-        with open(self.hadoop_home + "/etc/hadoop/core-site.xml", "r") as core_site:
-            lines = core_site.readlines()
-        with open(self.hadoop_home + "/etc/hadoop/core-site.xml", "w") as core_site:
-            for line in lines:
-                if "<configuration>" in line:
-                    core_site.write(line)
-                    core_site.write(
-                        f"\t<property>\n\t\t<name>fs.default.name</name>\n\t\t<value>hdfs://{master_dns}:50070</value>\n\t</property>\n"
-                    )
-                elif "</configuration>" in line:
-                    core_site.write(line)
-                else:
-                    core_site.write(line)
-        print("Edited core-site.xml ...")
