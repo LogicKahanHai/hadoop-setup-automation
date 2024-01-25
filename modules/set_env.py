@@ -45,8 +45,12 @@ class SetEnv:
         bashrc.write("\nexport JAVA_HOME=" + java_home)
         bashrc.write("\nexport PATH=$PATH:$JAVA_HOME/bin")
         bashrc.close()
-        print(sp.getoutput(["echo $JAVA_HOME"]))
-        print(".bashrc updated...")
+        print("\nUpdated .bashrc")
+        print("\n\nExiting program...")
+        print(
+            "Please RESTART your terminal and run the program again. Or run `source ~/.bashrc` to update the environment."
+        )
+        raise errors.JavaHomeSetRestart()
 
     def add_hadoop(self):
         print(
