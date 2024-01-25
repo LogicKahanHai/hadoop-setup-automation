@@ -37,13 +37,13 @@ class SetEnv:
         home = sp.getoutput(["echo $HOME"])
         bashrc = open(home + "/.bashrc", "a")
         which_java = self.db.read_property(Constants.which_java())
-        java_home = sp.getoutput(["readlink", "-f", which_java])
-        java_home = java_home.replace("/bin/java", "")
+        java_home = sp.getoutput(["readlink -f " + which_java])
+        java_home = java_home.rstrip("/bin/java")
         self.db.write_property(Constants.java_home(), java_home)
         bashrc.write("\nexport JAVA_HOME=" + java_home)
         bashrc.write("\nexport PATH=$PATH:$JAVA_HOME/bin")
         bashrc.close()
-        sp.getoutput(["source", "~/.bashrc"])
+        sp.getoutput(["source " + home + "/.bashrc"])
         print(".bashrc updated...")
 
     def add_hadoop(self):
