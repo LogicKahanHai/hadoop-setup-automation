@@ -1,0 +1,4 @@
+__pycache__/
+
+# local db - will be created at runtime
+local_db.json
