@@ -20,11 +20,11 @@ class SetEnv:
             if e is not errors.JavaNotInstalledError:
                 raise e
 
-        self.db.write_property(Constants.which_java, which_java)
+        self.db.write_property(Constants.which_java(), which_java)
         print("Java is installed. Getting JAVA_HOME...")
         java_home = str(sp.getoutput(["echo $JAVA_HOME"]))
         if java_home:
-            self.db.write_property(Constants.java_home, java_home)
+            self.db.write_property(Constants.java_home(), java_home)
             print("JAVA_HOME is set. Skipping updating .bashrc...")
         else:
             print("JAVA_HOME is not set. Updating .bashrc...")
@@ -35,10 +35,10 @@ class SetEnv:
     def update_bashrc(self):
         print("Updating .bashrc...")
         bashrc = open("~/.bashrc", "a")
-        which_java = self.db.read_property(Constants.which_java)
+        which_java = self.db.read_property(Constants.which_java())
         java_home = sp.getoutput(["readlink", "-f", which_java])
         java_home = java_home.replace("/bin/java", "")
-        self.db.write_property(Constants.java_home, java_home)
+        self.db.write_property(Constants.java_home(), java_home)
         bashrc.write("\nexport JAVA_HOME=" + java_home)
         bashrc.write("\nexport PATH=$PATH:$JAVA_HOME/bin")
         bashrc.close()
@@ -53,4 +53,4 @@ class SetEnv:
         print("Enter path to Hadoop installation (Press ENTER after pasting): ", end="")
 
         hadoop_home = input()
-        self.db.write_property(Constants.hadoop_home, hadoop_home)
+        self.db.write_property(Constants.hadoop_home(), hadoop_home)
