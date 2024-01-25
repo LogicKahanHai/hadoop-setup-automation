@@ -35,6 +35,7 @@ class HadoopSetup:
         print("Added JAVA_HOME to yarn-env.sh ...")
 
     def edit_core_site(self, master_dns: str):
+        self.db.write_property(Constants.master_dns(), master_dns)
         print("Editing core-site.xml...")
         with open(self.hadoop_home + "/etc/hadoop/core-site.xml", "r") as core_site:
             lines = core_site.readlines()

@@ -7,3 +7,6 @@ class Constants:
 
     def hadoop_home():
         return "hadoop_home"
+
+    def master_dns():
+        return "master_dns"
