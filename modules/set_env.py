@@ -37,6 +37,7 @@ class SetEnv:
         bashrc = open("~/.bashrc", "a")
         which_java = self.db.read_property(Constants.which_java)
         java_home = sp.getoutput(["readlink", "-f", which_java])
+        java_home = java_home.replace("/bin/java", "")
         self.db.write_property(Constants.java_home, java_home)
         bashrc.write("\nexport JAVA_HOME=" + java_home)
         bashrc.write("\nexport PATH=$PATH:$JAVA_HOME/bin")
