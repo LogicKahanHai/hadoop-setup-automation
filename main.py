@@ -7,6 +7,12 @@ from modules.hadoop_setup import HadoopEnvSetup
 from modules.set_env import SetEnv
 
 
+# TODO: Change the start to while loop with a menu with the places I am exiting the program.
+# TODO: Clean up the Print statements to properly guide the user.
+# TODO: SSH password-less login setup if possible, or at least after that part.
+# DONE: Master configuration.
+
+
 class Main:
     def __init__(self) -> None:
         self.db = fh.FileHandling()
@@ -53,15 +59,26 @@ class Main:
 if __name__ == "__main__":
     main = Main()
     print("Hello! Welcome to Logic's Hadoop Cluster Setup Wizard. :)")
-    print("Are you running this program on an AWS EC2 instance running Ubuntu? (y/n): ", end="")
+    print(
+        "Are you running this program on an AWS EC2 instance running Ubuntu? (y/n): ",
+        end="",
+    )
     is_aws_ubuntu = input()
     if is_aws_ubuntu == "n":
-        print("Please run this program on an AWS EC2 instance running Ubuntu. The Developer is working hard to test and provide a universal solution... Till then, please use an AWS EC2 instance running Ubuntu.")
+        print(
+            "Please run this program on an AWS EC2 instance running Ubuntu. The Developer is working hard to test and provide a universal solution... Till then, please use an AWS EC2 instance running Ubuntu."
+        )
         print("Exiting program...")
         exit(0)
-    print("This program will guide you through the setup process and also do all the tedious work for you.")
-    print("Please make sure you meet the following basic requirements before you begin:")
-    print("1. Java is installed on your system and is available in your .bashrc file (or the equivalent in your OS).")
+    print(
+        "This program will guide you through the setup process and also do all the tedious work for you."
+    )
+    print(
+        "Please make sure you meet the following basic requirements before you begin:"
+    )
+    print(
+        "1. Java is installed on your system and is available in your .bashrc file (or the equivalent in your OS)."
+    )
     print("2. You have downloaded and extracted Hadoop on your system.")
     print("\n\nDo you meet the above requirements? (y/n): ", end="")
     meets_requirements = input()
@@ -89,4 +106,3 @@ if __name__ == "__main__":
         print("Please setup SSH password-less login with the worker machines first.")
         print("Exiting program...")
         exit(0)
-
