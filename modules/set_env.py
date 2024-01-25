@@ -1,5 +1,7 @@
 import errors
 import subprocess as sp
+import os
+
 
 from file_handling import FileHandling
 from const.constants import Constants
@@ -43,8 +45,7 @@ class SetEnv:
         bashrc.write("\nexport JAVA_HOME=" + java_home)
         bashrc.write("\nexport PATH=$PATH:$JAVA_HOME/bin")
         bashrc.close()
-        update_bashrc = sp.getstatusoutput([". " + home + "/.bashrc"])
-        print(f". {home}/.bashrc")
+        os.system(f"source {home}/.bashrc")
         print(".bashrc updated...")
 
     def add_hadoop(self):
