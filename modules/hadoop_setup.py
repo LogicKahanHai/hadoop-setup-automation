@@ -43,7 +43,7 @@ class HadoopSetup:
                 if "<configuration>" in line:
                     core_site.write(line)
                     core_site.write(
-                        f"\n<property>\n\t<name>fs.default.name</name>\n\t<value>hdfs://{master_dns}:50070</value>\n</property>"
+                        f"\t<property>\n\t\t<name>fs.default.name</name>\n\t\t<value>hdfs://{master_dns}:50070</value>\n\t</property>\n"
                     )
                 elif "</configuration>" in line:
                     core_site.write(line)
