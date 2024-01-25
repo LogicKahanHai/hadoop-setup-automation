@@ -44,7 +44,7 @@ class SetEnv:
         bashrc.write("\nexport PATH=$PATH:$JAVA_HOME/bin")
         bashrc.close()
         update_bashrc = sp.getstatusoutput([". " + home + "/.bashrc"])
-        print(update_bashrc)
+        print(f". {home}/.bashrc")
         print(".bashrc updated...")
 
     def add_hadoop(self):
