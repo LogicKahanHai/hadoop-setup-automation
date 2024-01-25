@@ -24,3 +24,8 @@ class Main:
         self.hadoop_setup.edit_mapred_env()
         self.hadoop_setup.edit_yarn_env()
         print("Hadoop environment files edited.")
+
+
+if __name__ == "__main__":
+    main = Main()
+    main.run()
