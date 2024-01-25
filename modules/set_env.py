@@ -34,7 +34,8 @@ class SetEnv:
 
     def update_bashrc(self):
         print("Updating .bashrc...")
-        bashrc = open("~/.bashrc", "a")
+        home = sp.getoutput(["echo $HOME"])
+        bashrc = open(home + "/.bashrc", "a")
         which_java = self.db.read_property(Constants.which_java())
         java_home = sp.getoutput(["readlink", "-f", which_java])
         java_home = java_home.replace("/bin/java", "")
