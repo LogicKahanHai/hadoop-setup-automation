@@ -10,7 +10,7 @@ class Main:
     def __init__(self) -> None:
         self.db = fh.FileHandling()
 
-    def run(self):
+    def initial_setup(self):
         self.set_env = SetEnv(self.db)
         print("The first step is to check if Java is installed...")
         self.set_env.check_java()
@@ -28,4 +28,14 @@ class Main:
 
 if __name__ == "__main__":
     main = Main()
-    main.run()
+    main.initial_setup()
+    print("Initial setup complete.")
+    print("\n\nIs this the MASTER machine? (y/n): ", end="")
+    is_master = input()
+    if is_master == "y":
+        print("Please enter the Public IPv4 DNS of this machine: ", end="")
+        master_dns = input()
+        main.hadoop_setup.edit_core_site(master_dns)
+    else:
+        print("Please run this program on the MASTER machine ONLY.")
+        print("Exiting program...")

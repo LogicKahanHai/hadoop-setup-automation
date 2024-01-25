@@ -33,3 +33,20 @@ class HadoopSetup:
         )
         yarn_env.close()
         print("Added JAVA_HOME to yarn-env.sh ...")
+
+    def edit_core_site(self, master_dns: str):
+        print("Editing core-site.xml...")
+        with open(self.hadoop_home + "/etc/hadoop/core-site.xml", "r") as core_site:
+            lines = core_site.readlines()
+        with open(self.hadoop_home + "/etc/hadoop/core-site.xml", "w") as core_site:
+            for line in lines:
+                if "<configuration>" in line:
+                    core_site.write(line)
+                    core_site.write(
+                        f"\n<property>\n\t<name>fs.default.name</name>\n\t<value>hdfs://{master_dns}:50070</value>\n</property>"
+                    )
+                elif "</configuration>" in line:
+                    core_site.write(line)
+                else:
+                    continue
+        print("Edited core-site.xml ...")
