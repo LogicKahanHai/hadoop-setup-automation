@@ -48,15 +48,15 @@ class SetEnv:
         print("\nUpdated .bashrc")
         print("\n\nExiting program...")
         print(
-            "Please RESTART your terminal and run the program again. Or run `source ~/.bashrc` to update the environment."
+            "Please RESTART your terminal (Or run `source ~/.bashrc` to update the environment) and run the program again and select option 1 (Initial Setup again)."
         )
-        raise errors.JavaHomeSetRestart()
+        exit(0)
 
     def add_hadoop(self):
         print(
             "Please enter the path to your Hadoop installation: (It should look something like `/path/to/hadoop-x.y.z`)"
         )
-        print("\nExample: /home/user/hadoop-3.3.0")
+        print("\nExample: /home/ubuntu/hadoop-3.3.0")
         print("Enter path to Hadoop installation (Press ENTER after pasting): ", end="")
 
         hadoop_home = input()

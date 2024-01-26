@@ -19,20 +19,17 @@ class Main:
 
     def initial_setup(self):
         self.set_env = SetEnv(self.db)
-        print("The first step is to check if Java is installed...")
+        print("Checking if Java is Installed on the system...")
         self.set_env.check_java()
         print("System environment setup complete.")
-        print("The next step is to add the Hadoop installation location...")
         self.set_env.add_hadoop()
         print("Hadoop installation location added.")
-        print("The next step is to edit the Hadoop environment files...")
+        print("Editing the Hadoop environment files...")
         self.hadoop_setup = HadoopEnvSetup(self.db)
         self.hadoop_setup.edit_hadoop_env()
         self.hadoop_setup.edit_mapred_env()
         self.hadoop_setup.edit_yarn_env()
         print("Hadoop environment files edited.")
-
-        print("The next step is to edit the Hadoop configuration files...")
 
     def hadoop_master_setup(self):
         print("Please enter the Public IPv4 DNS of this machine: ", end="")
@@ -58,51 +55,53 @@ class Main:
 
 if __name__ == "__main__":
     main = Main()
-    print("Hello! Welcome to Logic's Hadoop Cluster Setup Wizard. :)")
-    print(
-        "Are you running this program on an AWS EC2 instance running Ubuntu? (y/n): ",
-        end="",
-    )
-    is_aws_ubuntu = input()
-    if is_aws_ubuntu == "n":
+    print("Welcome to the Hadoop Cluster Setup Script.")
+    print("============================================")
+    while True:
+        print("\nIs this the Master Node? (y/n): ", end="")
+        is_master = input()
+        switcher = {"y": True, "n": False}
+        is_master = switcher.get(is_master, "Invalid choice.")
+        if is_master == "Invalid choice.":
+            print("Invalid choice. Please try again.")
+            continue
+        elif not is_master:
+            print("Please run this script on the Master Node ONLY.")
+            print("Exiting program...")
+            exit(0)
+
+        print("\n\n")
+        print("============================================")
+        print("Please select an option from the menu below:")
         print(
-            "Please run this program on an AWS EC2 instance running Ubuntu. The Developer is working hard to test and provide a universal solution... Till then, please use an AWS EC2 instance running Ubuntu."
+            "If you are running this script for the first time, please select option 1, otherwise select the appropriate step."
         )
-        print("Exiting program...")
-        exit(0)
-    print(
-        "This program will guide you through the setup process and also do all the tedious work for you."
-    )
-    print(
-        "Please make sure you meet the following basic requirements before you begin:"
-    )
-    print(
-        "1. Java is installed on your system and is available in your .bashrc file (or the equivalent in your OS)."
-    )
-    print("2. You have downloaded and extracted Hadoop on your system.")
-    print("\n\nDo you meet the above requirements? (y/n): ", end="")
-    meets_requirements = input()
-    if meets_requirements == "n":
-        print("Please meet the above requirements and then run this program again.")
-        print("Exiting program...")
-        exit(0)
-    main.initial_setup()
-    print("Initial setup complete.")
-    print("\n\nIs this the MASTER machine? (y/n): ", end="")
-    is_master = input()
-    if is_master == "y":
-        main.hadoop_master_setup()
-        print("Hadoop configuration on the Master System complete.")
-    else:
-        print("Please run this program on the MASTER machine ONLY.")
-        print("Exiting program...")
-        exit(0)
-    print(
-        "\n\nHave you setup SSH password-less login with the worker machines? (y/n): ",
-        end="",
-    )
-    ssh_setup = input()
-    if ssh_setup == "n":
-        print("Please setup SSH password-less login with the worker machines first.")
-        print("Exiting program...")
-        exit(0)
+        print("1. Initial Setup")
+        print("2. Hadoop Master Setup")
+        print("3. Hadoop Slave Setup (After SSH password-less login is setup)")
+        print("4. Exit")
+        print("Enter your choice: ", end="")
+        choice = input()
+        if choice == "1":
+            print("\n\n")
+            print("============================================")
+            print("Initial Setup Started...")
+            main.initial_setup()
+            print("Initial Setup Complete.")
+            print("============================================")
+            print("\n\n")
+        elif choice == "2":
+            print("\n\n")
+            print("============================================")
+            print("Hadoop Master Setup Started...")
+            main.hadoop_master_setup()
+            print("Hadoop Master Setup Complete.")
+            print("============================================")
+            print("\n\n")
+        elif choice == "3":
+            print("Hadoop Slave Setup")
+        elif choice == "4":
+            print("Exiting program...")
+            exit(0)
+        else:
+            print("Invalid choice. Please try again.")
