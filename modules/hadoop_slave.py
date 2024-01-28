@@ -32,11 +32,9 @@ class HadoopSlaveSetup:
             if e is not errors.JavaNotInstalledError:
                 raise e
         java_home = sp.getoutput(["ssh " + self.ipv4_dns + " echo $JAVA_HOME"])
-
+        print(f"{java_home} is java_home")
         if java_home:
-            self.db.write_slave_property(
-                self.ip_addr, Constants.java_home(), java_home[0]
-            )
+            self.db.write_slave_property(self.ip_addr, Constants.java_home(), java_home)
             print("Java is installed on Worker and JAVA_HOME is set.")
         else:
             print("Java is not added to PATH on this worker. Adding to PATH...")

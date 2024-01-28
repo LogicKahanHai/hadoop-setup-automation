@@ -16,9 +16,10 @@ from modules.set_env import SetEnv
 
 class Main:
     def __init__(self) -> None:
-        self.db = fh.FileHandling()
+        pass
 
     def initial_setup(self):
+        self.db = fh.FileHandling()
         self.set_env = SetEnv(self.db)
         print("Checking if Java is Installed on the system...")
         self.set_env.check_java()
@@ -135,14 +136,17 @@ if __name__ == "__main__":
                 hadoop_dir = input()
                 print("============================================")
                 print("\n")
-                print("Starting Hadoop Worker Setup for Worker Node " + str(worker + 1) + "...")
+                print(
+                    "Starting Hadoop Worker Setup for Worker Node "
+                    + str(worker + 1)
+                    + "..."
+                )
                 hadoop_slave_setup = HadoopSlaveSetup(
                     main.db, worker_ip, worker_dns, data_dir, hadoop_dir
                 )
                 hadoop_slave_setup.setup_slave()
                 hadoop_slave_setup.check_java_slave()
 
-                
         elif choice == "4":
             print("Exiting program...")
             exit(0)
