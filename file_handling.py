@@ -16,10 +16,15 @@ class FileHandling:
         return f_json
 
     def initialise_json(self):
-        f = open(self.json_file_name, mode="w")
-        f.write("{}")
-        f.close()
-        return sp.getoutput(["pwd"]) + "/" + self.json_file_name
+        try:
+            f = open(self.json_file_name, mode="r")
+            f.close()
+            return sp.getoutput(["pwd"]) + "/" + self.json_file_name
+        except FileNotFoundError:
+            f = open(self.json_file_name, mode="w")
+            f.write("{}")
+            f.close()
+            return sp.getoutput(["pwd"]) + "/" + self.json_file_name
 
     def write_property(self, key: str, value):
         f_in = open(self.json_file, "r")
