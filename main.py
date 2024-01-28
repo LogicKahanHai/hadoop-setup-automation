@@ -145,6 +145,10 @@ if __name__ == "__main__":
                 )
                 hadoop_slave_setup.setup_slave()
                 hadoop_slave_setup.check_java_slave()
+                hadoop_slave_setup.setup_slave_env()
+                hadoop_slave_setup.scp_core_site()
+                hadoop_slave_setup.add_hdfs_site()
+                # hadoop_slave_setup.scp_mapred_site()
 
         elif choice == "4":
             print("Exiting program...")

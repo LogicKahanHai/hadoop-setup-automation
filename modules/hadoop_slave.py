@@ -83,13 +83,59 @@ class HadoopSlaveSetup:
         ssh.close()
         print("Edited .bashrc on Worker.")
 
+    def setup_slave_env(self):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(self.ipv4_dns, username="ubuntu")
+        print("Setting up hadoop-env.sh on Worker...")
+        stdin, stdout, stderr = ssh.exec_command(
+            "echo '\nexport JAVA_HOME="
+            + self.db.read_slave_property(self.ip_addr, Constants.java_home())
+            + "' >> "
+            + self.hadoop_dir
+            + "/etc/hadoop/hadoop-env.sh"
+        )
+        if stderr.readlines():
+            raise Exception(
+                "Error editing hadoop-env.sh on Worker. Please check the SSH connection."
+            )
+        print("Set up hadoop-env.sh on Worker.")
+        print("Setting up yarn-env.sh on Worker...")
+        stdin, stdout, stderr = ssh.exec_command(
+            "echo '\nexport JAVA_HOME="
+            + self.db.read_slave_property(self.ip_addr, Constants.java_home())
+            + "' >> "
+            + self.hadoop_dir
+            + "/etc/hadoop/yarn-env.sh"
+        )
+        if stderr.readlines():
+            raise Exception(
+                "Error editing yarn-env.sh on Worker. Please check the SSH connection."
+            )
+        print("Set up yarn-env.sh on Worker.")
+        print("Setting up mapred-env.sh on Worker...")
+        stdin, stdout, stderr = ssh.exec_command(
+            "echo '\nexport JAVA_HOME="
+            + self.db.read_slave_property(self.ip_addr, Constants.java_home())
+            + "' >> "
+            + self.hadoop_dir
+            + "/etc/hadoop/mapred-env.sh"
+        )
+        if stderr.readlines():
+            raise Exception(
+                "Error editing mapred-env.sh on Worker. Please check the SSH connection."
+            )
+        print("Set up mapred-env.sh on Worker.")
+        ssh.close()
+        print("Set up environment on Worker.")
+
     def scp_core_site(self):
         print("Copying core-site.xml to worker...")
         sp.getoutput(
             [
                 "scp "
-                + self.hadoop_dir
-                + "/etc/hadoop/core-site.xml "
+                + self.db.read_property(Constants.hadoop_home())
+                + "/etc/hadoop/core-site.xml ubuntu@"
                 + self.ipv4_dns
                 + ":"
                 + self.hadoop_dir
@@ -97,3 +143,52 @@ class HadoopSlaveSetup:
             ]
         )
         print("Copied core-site.xml to worker.")
+
+    def add_hdfs_site(self):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(self.ipv4_dns, username="ubuntu")
+        print("Adding hdfs-site.xml to worker...")
+        # stdin, stdout, stderr = ssh.exec_command(
+        #     "echo '\n<property>\n\t<name>dfs.datanode.data.dir</name>\n\t<value>"
+        #     + self.db.read_slave_property(self.ip_addr, Constants.data_dir())
+        #     + "</value>\n</property>\n' >> "
+        #     + self.hadoop_dir
+        #     + "/etc/hadoop/hdfs-site.xml"
+        # )
+        stdin, stdout, stderr = ssh.exec_command(
+            "cat " + self.hadoop_dir + "/etc/hadoop/hdfs-site.xml"
+        )
+        if stderr.readlines():
+            raise Exception(
+                "Error editing hdfs-site.xml on Worker. Please check the SSH connection."
+            )
+        final_hdfs_site = ""
+        for line in stdout.readlines():
+            if "</configuration>" in line:
+                final_hdfs_site += (
+                    "\t<property>\n\t\t<name>dfs.datanode.data.dir</name>\n\t\t<value>"
+                    + self.db.read_slave_property(self.ip_addr, Constants.data_dir())
+                    + "</value>\n\t</property>\n"
+                )
+            final_hdfs_site += line
+        stdin, stdout, stderr = ssh.exec_command(
+            "rm " + self.hadoop_dir + "/etc/hadoop/hdfs-site.xml"
+        )
+        if stderr.readlines():
+            raise Exception(
+                "Error editing hdfs-site.xml on Worker. Please check the SSH connection."
+            )
+        stdin, stdout, stderr = ssh.exec_command(
+            "echo '"
+            + final_hdfs_site
+            + "' >> "
+            + self.hadoop_dir
+            + "/etc/hadoop/hdfs-site.xml"
+        )
+        if stderr.readlines():
+            raise Exception(
+                "Error editing hdfs-site.xml on Worker. Please check the SSH connection."
+            )
+        print("Added hdfs-site.xml to worker.")
+        ssh.close()

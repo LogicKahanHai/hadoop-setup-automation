@@ -1,7 +1,6 @@
 from io import TextIOWrapper
 import json
 import subprocess as sp
-import errors
 
 
 class FileHandling:
@@ -35,6 +34,12 @@ class FileHandling:
         f_out.write(f_out_json)
         f_in.close()
         f_out.close()
+
+    def read_slave_property(self, slave_ip: str, key: str):
+        f = open(self.json_file, mode="r")
+        f_json = json.load(f)
+        f.close()
+        return f_json[slave_ip][key]
 
     def write_slave_property(self, slave_ip: str, key: str, value):
         f_in = open(self.json_file, "r")
