@@ -38,6 +38,8 @@ class HadoopSlaveSetup:
         # TODO: Fix this, JAVA_HOME is already set on the worker but still gives empty output
 
         stdin, stdout, stderr = ssh.exec_command("cat $HOME/.bashrc | grep $JAVA_HOME")
+        for line in stderr.readlines():
+            print(line)
         if stderr.readlines():
             raise Exception("Error getting $JAVA_HOME on Worker.")
         print("Got JAVA_HOME on Worker.")
