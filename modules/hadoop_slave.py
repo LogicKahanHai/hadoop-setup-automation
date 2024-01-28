@@ -40,6 +40,9 @@ class HadoopSlaveSetup:
         stdin, stdout, stderr = ssh.exec_command("echo $JAVA_HOME")
         if stderr.readlines():
             raise Exception("Error getting $JAVA_HOME on Worker.")
+        print("Got JAVA_HOME on Worker.")
+        for line in stdout.readlines():
+            print(line)
         java_home = stdout.readlines()[0].rstrip("\n")
 
         print(f"{java_home} is java_home")
