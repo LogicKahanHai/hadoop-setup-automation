@@ -40,23 +40,21 @@ class HadoopSlaveSetup:
         stdin, stdout, stderr = ssh.exec_command(
             "cat $HOME/.bashrc | grep '$JAVA_HOME'"
         )
-        for line in stderr.readlines():
-            print(line)
         if stderr.readlines():
+            ssh.close()
             raise Exception("Error getting $JAVA_HOME on Worker.")
         print("Got JAVA_HOME on Worker.")
-        for line in stdout.readlines():
-            print(line)
-        java_home = stdout.readlines()[0].rstrip("\n")
-
+        stdin, stdout, stderr = ssh.exec_command("cat $HOME/.bashrc | grep 'JAVA_HOME'")
+        java_home = stdout.readlines()[0].rstrip("\n").split("=")[1]
         print(f"{java_home} is java_home")
         if java_home:
             self.db.write_slave_property(self.ip_addr, Constants.java_home(), java_home)
             print("Java is installed on Worker and JAVA_HOME is set already.")
+            ssh.close()
         else:
             ssh.close()
             print("Java is not added to PATH on this worker. Adding to PATH...")
-            # self.add_java_slave()
+            self.add_java_slave()
             print("Java is installed on Worker and JAVA_HOME is set.")
 
     def add_java_slave(self):
