@@ -81,6 +81,7 @@ class HadoopSlaveSetup:
                 "Error editing .bashrc on Worker. Please check the SSH connection."
             )
         ssh.close()
+        self.db.write_slave_property(self.ip_addr, Constants.java_home(), java_home)
         print("Edited .bashrc on Worker.")
 
     def setup_slave_env(self):
