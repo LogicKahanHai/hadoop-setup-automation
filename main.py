@@ -4,6 +4,7 @@ import errors
 import file_handling as fh
 from modules.hadoop_master import HadoopMasterSetup
 from modules.hadoop_setup import HadoopEnvSetup
+from modules.hadoop_slave import HadoopSlaveSetup
 from modules.set_env import SetEnv
 
 
@@ -55,7 +56,7 @@ class Main:
 
 if __name__ == "__main__":
     main = Main()
-    print("Welcome to the Hadoop Cluster Setup Script.")
+    print('Welcome to the Hadoop Cluster Setup Script built by Rishi "Logic" Bhalla.')
     print("============================================")
     while True:
         print("\nIs this the Master Node? (y/n): ", end="")
@@ -99,7 +100,48 @@ if __name__ == "__main__":
             print("============================================")
             print("\n\n")
         elif choice == "3":
-            print("Hadoop Slave Setup")
+            print("\n\n")
+            print("============================================")
+            print("Please enter the number of Worker Nodes: ", end="")
+            num_workers = int(input())
+            for worker in range(num_workers):
+                print(
+                    "Please enter the Public IP Address of Worker Node "
+                    + str(worker + 1)
+                    + ": ",
+                    end="",
+                )
+                worker_ip = input()
+                print(
+                    "Please enter the Public IPv4 DNS of Worker Node "
+                    + str(worker + 1)
+                    + ": ",
+                    end="",
+                )
+                worker_dns = input()
+                print(
+                    "Please enter the path to the directory where you want to store the DataNode data for Worker Node "
+                    + str(worker + 1)
+                    + ": ",
+                    end="",
+                )
+                data_dir = input()
+                print(
+                    "Please enter the path to the directory where Hadoop is installed on Worker Node "
+                    + str(worker + 1)
+                    + ": ",
+                    end="",
+                )
+                hadoop_dir = input()
+                print("============================================")
+                print("\n")
+                print("Starting Hadoop Worker Setup for Worker Node " + str(worker + 1) + "...")
+                hadoop_slave_setup = HadoopSlaveSetup(
+                    main.db, worker_ip, worker_dns, data_dir, hadoop_dir
+                )
+                hadoop_slave_setup.setup_slave()
+                
+                
         elif choice == "4":
             print("Exiting program...")
             exit(0)

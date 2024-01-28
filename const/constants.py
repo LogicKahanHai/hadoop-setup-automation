@@ -22,3 +22,8 @@ class Constants:
 
     def resource_manager_dns():
         return "resource_manager_dns"
+    
+    def ipv4_dns():
+        return "ipv4_dns"
+    
+    
