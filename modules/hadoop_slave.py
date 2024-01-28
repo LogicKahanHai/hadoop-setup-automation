@@ -14,6 +14,7 @@ class HadoopSlaveSetup:
 
     def setup_slave(self):
         print("Adding Worker details...")
+        self.db.write_property(self.ip_addr, {})
         self.db.write_slave_property(self.ip_addr, Constants.ipv4_dns(), self.ipv4_dns)
         self.db.write_slave_property(self.ip_addr, Constants.data_dir(), self.data_dir)
         self.db.write_slave_property(
@@ -76,7 +77,6 @@ class HadoopSlaveSetup:
             )
         ssh.close()
         print("Edited .bashrc on Worker.")
-        
 
     def scp_core_site(self):
         print("Copying core-site.xml to worker...")
