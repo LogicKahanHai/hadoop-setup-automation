@@ -43,19 +43,29 @@ class HadoopSlaveSetup:
         if stderr.readlines():
             ssh.close()
             raise Exception("Error getting $JAVA_HOME on Worker.")
-        print("Got JAVA_HOME on Worker.")
-        stdin, stdout, stderr = ssh.exec_command("cat $HOME/.bashrc | grep 'JAVA_HOME'")
-        java_home = stdout.readlines()[0].rstrip("\n").split("=")[1]
-        print(f"{java_home} is java_home")
-        if java_home:
-            self.db.write_slave_property(self.ip_addr, Constants.java_home(), java_home)
-            print("Java is installed on Worker and JAVA_HOME is set already.")
-            ssh.close()
-        else:
+        if not stdout.readlines():
             ssh.close()
             print("Java is not added to PATH on this worker. Adding to PATH...")
             self.add_java_slave()
             print("Java is installed on Worker and JAVA_HOME is set.")
+        else:
+            print("Got JAVA_HOME on Worker.")
+            stdin, stdout, stderr = ssh.exec_command("cat $HOME/.bashrc | grep 'JAVA_HOME'")
+            if stderr.readlines():
+                ssh.close()
+                raise Exception("Error getting $JAVA_HOME on Worker.")
+
+            java_home = stdout.readlines()[0].rstrip("\n").split("=")[1]
+            print(f"{java_home} is java_home")
+            if java_home:
+                self.db.write_slave_property(self.ip_addr, Constants.java_home(), java_home)
+                print("Java is installed on Worker and JAVA_HOME is set already.")
+                ssh.close()
+            else:
+                ssh.close()
+                print("Java is not added to PATH on this worker. Adding to PATH...")
+                self.add_java_slave()
+                print("Java is installed on Worker and JAVA_HOME is set.")
 
     def add_java_slave(self):
         print("Editing .bashrc on Worker...")
