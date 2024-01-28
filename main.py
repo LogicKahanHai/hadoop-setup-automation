@@ -51,6 +51,7 @@ class Main:
         hadoop_master_setup.edit_hdfs_site()
         hadoop_master_setup.edit_mapred_site()
         hadoop_master_setup.edit_yarn_site()
+        hadoop_master_setup.edit_workers_file_master()
         print("Hadoop configuration files edited on the Master System.")
 
 
