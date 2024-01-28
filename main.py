@@ -16,10 +16,9 @@ from modules.set_env import SetEnv
 
 class Main:
     def __init__(self) -> None:
-        pass
+        self.db = fh.FileHandling()
 
     def initial_setup(self):
-        self.db = fh.FileHandling()
         self.set_env = SetEnv(self.db)
         print("Checking if Java is Installed on the system...")
         self.set_env.check_java()
