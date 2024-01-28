@@ -140,7 +140,8 @@ if __name__ == "__main__":
                     main.db, worker_ip, worker_dns, data_dir, hadoop_dir
                 )
                 hadoop_slave_setup.setup_slave()
-                
+                hadoop_slave_setup.check_java_slave()
+
                 
         elif choice == "4":
             print("Exiting program...")
