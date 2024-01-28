@@ -31,12 +31,19 @@ class HadoopSlaveSetup:
         except Exception as e:
             if e is not errors.JavaNotInstalledError:
                 raise e
-        java_home = sp.getoutput(["ssh " + self.ipv4_dns + " echo $JAVA_HOME"])
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(self.ipv4_dns, username="ubuntu")
+        stdin, stdout, stderr = ssh.exec_command("echo $JAVA_HOME")
+        if stderr.readlines():
+            raise Exception("Error getting $JAVA_HOME on Worker.")
+        java_home = stdout.readlines()[0].rstrip("\n")
         print(f"{java_home} is java_home")
         if java_home:
             self.db.write_slave_property(self.ip_addr, Constants.java_home(), java_home)
-            print("Java is installed on Worker and JAVA_HOME is set.")
+            print("Java is installed on Worker and JAVA_HOME is set already.")
         else:
+            ssh.close()
             print("Java is not added to PATH on this worker. Adding to PATH...")
             self.add_java_slave()
             print("Java is installed on Worker and JAVA_HOME is set.")
