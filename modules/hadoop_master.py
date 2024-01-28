@@ -89,3 +89,9 @@ class HadoopMasterSetup:
                 else:
                     yarn_site.write(line)
         print("Edited yarn-site.xml ...")
+
+    def edit_workers_file_master(self):
+        print("Editing workers file...")
+        with open(self.hadoop_home + "/etc/hadoop/workers", "w") as workers:
+            workers.write("")
+        print("Edited workers file ...")
