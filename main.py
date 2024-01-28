@@ -148,7 +148,14 @@ if __name__ == "__main__":
                 hadoop_slave_setup.setup_slave_env()
                 hadoop_slave_setup.scp_core_site()
                 hadoop_slave_setup.add_hdfs_site()
-                # hadoop_slave_setup.scp_mapred_site()
+                hadoop_slave_setup.scp_mapred_site()
+                hadoop_slave_setup.scp_yarn_site()
+                hadoop_slave_setup.edit_workers_file_master()
+                print(
+                    "Hadoop Worker Setup for Worker Node "
+                    + str(worker + 1)
+                    + " Complete."
+                )
 
         elif choice == "4":
             print("Exiting program...")

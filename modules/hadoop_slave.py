@@ -34,10 +34,14 @@ class HadoopSlaveSetup:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(self.ipv4_dns, username="ubuntu")
+
+        # TODO: Fix this, JAVA_HOME is already set on the worker but still gives empty output
+
         stdin, stdout, stderr = ssh.exec_command("echo $JAVA_HOME")
         if stderr.readlines():
             raise Exception("Error getting $JAVA_HOME on Worker.")
         java_home = stdout.readlines()[0].rstrip("\n")
+
         print(f"{java_home} is java_home")
         if java_home:
             self.db.write_slave_property(self.ip_addr, Constants.java_home(), java_home)
@@ -45,7 +49,7 @@ class HadoopSlaveSetup:
         else:
             ssh.close()
             print("Java is not added to PATH on this worker. Adding to PATH...")
-            self.add_java_slave()
+            # self.add_java_slave()
             print("Java is installed on Worker and JAVA_HOME is set.")
 
     def add_java_slave(self):
@@ -150,13 +154,6 @@ class HadoopSlaveSetup:
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(self.ipv4_dns, username="ubuntu")
         print("Adding hdfs-site.xml to worker...")
-        # stdin, stdout, stderr = ssh.exec_command(
-        #     "echo '\n<property>\n\t<name>dfs.datanode.data.dir</name>\n\t<value>"
-        #     + self.db.read_slave_property(self.ip_addr, Constants.data_dir())
-        #     + "</value>\n</property>\n' >> "
-        #     + self.hadoop_dir
-        #     + "/etc/hadoop/hdfs-site.xml"
-        # )
         stdin, stdout, stderr = ssh.exec_command(
             "cat " + self.hadoop_dir + "/etc/hadoop/hdfs-site.xml"
         )
@@ -193,3 +190,44 @@ class HadoopSlaveSetup:
             )
         print("Added hdfs-site.xml to worker.")
         ssh.close()
+
+    def scp_mapred_site(self):
+        print("Copying mapred-site.xml to worker...")
+        sp.getoutput(
+            [
+                "scp "
+                + self.db.read_property(Constants.hadoop_home())
+                + "/etc/hadoop/mapred-site.xml ubuntu@"
+                + self.ipv4_dns
+                + ":"
+                + self.hadoop_dir
+                + "/etc/hadoop/"
+            ]
+        )
+        print("Copied mapred-site.xml to worker.")
+
+    def scp_yarn_site(self):
+        print("Copying yarn-site.xml to worker...")
+        sp.getoutput(
+            [
+                "scp "
+                + self.db.read_property(Constants.hadoop_home())
+                + "/etc/hadoop/yarn-site.xml ubuntu@"
+                + self.ipv4_dns
+                + ":"
+                + self.hadoop_dir
+                + "/etc/hadoop/"
+            ]
+        )
+        print("Copied yarn-site.xml to worker.")
+
+    def edit_workers_file_master(self):
+        sp.getoutput(
+            [
+                "echo '"
+                + self.ipv4_dns
+                + "' >> "
+                + self.db.read_property(Constants.hadoop_home())
+                + "/etc/hadoop/workers"
+            ]
+        )
